@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="绿茵体育 - 专业足球赛事直播、数据分析与即时比分，支持 Android 与 iOS 下载。">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <title>D体育 - 官方下载</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #0a1628;
+      --bg-card: #111f35;
+      --bg-card-hover: #162a48;
+      --green-primary: #00c853;
+      --green-light: #69f0ae;
+      --gold: #ffc107;
+      --gold-dark: #e6a800;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      --page-gutter: 24px;
+      --mobile-gutter: 24px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body.has-mobile-bar {
+      padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Background */
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 200, 83, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 80%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+        var(--bg-dark);
+      pointer-events: none;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Layout */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+      padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+    }
+
+    .hero > *,
+    .features-grid > *,
+    .cta-box {
+      min-width: 0;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 22, 40, 0.85);
+      border-bottom: 1px solid var(--border);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    @media (min-width: 901px) {
+      .header-inner { height: 72px; }
+    }
+
+    .header-download {
+      display: none;
+      background: linear-gradient(135deg, var(--green-primary), #00a844);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--green-primary), #00897b);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 200, 83, 0.35);
+    }
+
+    .logo-icon svg { width: 26px; height: 26px; }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text span { color: var(--green-primary); }
+
+    nav { display: flex; align-items: center; gap: 32px; }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--text-primary); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--green-primary), #00a844);
+      color: #fff !important;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-weight: 600 !important;
+      box-shadow: 0 4px 16px rgba(0, 200, 83, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 100px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 200, 83, 0.12);
+      border: 1px solid rgba(0, 200, 83, 0.25);
+      color: var(--green-light);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--green-primary);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--green-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin-bottom: 36px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    .stat-item strong {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .stat-item span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Download Buttons */
+    .download-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 28px;
+      min-height: 52px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    @media (hover: hover) {
+      .btn-download:hover {
+        transform: translateY(-3px);
+      }
+    }
+
+    .btn-download:active {
+      transform: scale(0.98);
+    }
+
+    .btn-android {
+      background: linear-gradient(135deg, var(--green-primary), #009624);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(0, 200, 83, 0.35);
+    }
+
+    .btn-android:hover {
+      box-shadow: 0 12px 32px rgba(0, 200, 83, 0.45);
+    }
+
+    .btn-ios {
+      background: linear-gradient(135deg, #ffffff, #e8e8e8);
+      color: #111;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-ios:hover {
+      box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-download svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+    .btn-download .btn-label small {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .btn-download .btn-label strong {
+      display: block;
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    .download-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .download-note a { color: var(--green-light); text-decoration: none; }
+
+    /* Phone Mockup */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-frame {
+      width: 280px;
+      background: linear-gradient(160deg, #1a3050 0%, #0d1f38 100%);
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .phone-screen {
+      background: linear-gradient(180deg, #0f2847 0%, #0a1628 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      aspect-ratio: 9/19;
+    }
+
+    .phone-notch {
+      width: 100px;
+      height: 24px;
+      background: #0a1628;
+      border-radius: 0 0 16px 16px;
+      margin: 0 auto;
+    }
+
+    .phone-content { padding: 16px; }
+
+    .match-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .match-league {
+      font-size: 0.65rem;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .match-teams {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .team {
+      text-align: center;
+      flex: 1;
+    }
+
+    .team-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      margin: 0 auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .team-name {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    .match-score {
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .match-score .score {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green-light);
+    }
+
+    .match-score .time {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+
+    .live-tag {
+      display: inline-block;
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .glow-orb {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+    }
+
+    .glow-orb.green {
+      background: rgba(0, 200, 83, 0.25);
+      top: 10%;
+      right: -10%;
+    }
+
+    .glow-orb.gold {
+      background: rgba(255, 193, 7, 0.15);
+      bottom: 5%;
+      left: -15%;
+    }
+
+    /* Features */
+    .features {
+      padding: 80px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      border-color: rgba(0, 200, 83, 0.2);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(0, 200, 83, 0.12);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 80px 0 100px;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(0, 200, 83, 0.12) 0%, rgba(255, 193, 7, 0.06) 100%);
+      border: 1px solid rgba(0, 200, 83, 0.2);
+      border-radius: 24px;
+      padding: 64px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 200, 83, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .cta-box p {
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    .cta-box .download-group {
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-secondary); }
+
+    /* Mobile sticky download bar */
+    .mobile-download-bar {
+      display: none;
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 200;
+      box-sizing: border-box;
+      padding-top: 10px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      padding-left: max(var(--page-gutter), env(safe-area-inset-left, 0px));
+      padding-right: max(var(--page-gutter), env(safe-area-inset-right, 0px));
+      background: rgba(10, 22, 40, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+    }
+
+    .mobile-download-bar__inner {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .mobile-bar-btn {
+      flex: 1 1 0;
+      width: 0;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 4px;
+      min-height: 46px;
+      border-radius: 12px;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .mobile-bar-btn svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
+
+    .mobile-bar-btn span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .mobile-bar-btn--android {
+      background: linear-gradient(135deg, var(--green-primary), #009624);
+      color: #fff;
+    }
+
+    .mobile-bar-btn--ios {
+      background: #fff;
+      color: #111;
+    }
+
+    .mobile-bar-btn.is-muted {
+      opacity: 0.92;
+    }
+
+    .mobile-bar-btn.is-highlight {
+      outline: 2px solid rgba(255, 255, 255, 0.28);
+      outline-offset: -2px;
+    }
+
+    /* Platform highlight */
+    .btn-download.is-recommended {
+      position: relative;
+    }
+
+    .btn-download.is-recommended::after {
+      content: '推荐';
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: var(--gold);
+      color: #111;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      :root {
+        --page-gutter: 24px;
+        --mobile-gutter: 20px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 32px 0 48px;
+        gap: 32px;
+      }
+
+      .hero-content {
+        order: 1;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .hero-desc {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+        padding: 0 4px;
+      }
+
+      .hero-badge { margin-bottom: 16px; }
+
+      .hero h1 {
+        font-size: clamp(1.75rem, 7vw, 2.5rem);
+        margin-bottom: 16px;
+        padding: 0 4px;
+      }
+
+      .hero-stats {
+        justify-content: center;
+        gap: 0;
+        margin-bottom: 28px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 8px;
+      }
+
+      .stat-item {
+        flex: 1;
+        padding: 0 8px;
+        border-right: 1px solid var(--border);
+      }
+
+      .stat-item:last-child { border-right: none; }
+
+      .stat-item strong { font-size: 1.25rem; }
+      .stat-item span { font-size: 0.75rem; }
+
+      .download-group {
+        justify-content: center;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 6px;
+        margin-bottom: 16px;
+      }
+
+      .download-group .btn-download {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        border-radius: 16px;
+      }
+
+      .btn-android {
+        box-shadow: 0 6px 18px rgba(0, 200, 83, 0.28);
+      }
+
+      .btn-ios {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+      }
+
+      .download-note {
+        padding: 0 4px;
+        line-height: 1.6;
+      }
+
+      .hero-visual {
+        order: 0;
+        margin-bottom: 8px;
+      }
+
+      .phone-frame { width: 200px; }
+      .phone-frame .match-card:last-child { display: none; }
+      .glow-orb { width: 200px; height: 200px; }
+
+      .features {
+        padding: 48px 0;
+      }
+
+      .section-header {
+        margin-bottom: 32px;
+      }
+
+      .section-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .section-header p {
+        font-size: 0.9rem;
+        padding: 0 8px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .feature-card {
+        padding: 20px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .feature-card:hover { transform: none; }
+
+      .feature-icon {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        margin-bottom: 0;
+        font-size: 1.25rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+
+      .feature-card p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+      }
+
+      .cta-section {
+        padding: 48px 0 32px;
+      }
+
+      .cta-box {
+        padding: 36px 20px;
+        border-radius: 18px;
+      }
+
+      .cta-box h2 {
+        font-size: 1.35rem;
+      }
+
+      .cta-box p {
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+      }
+
+      .cta-box .download-group {
+        display: none;
+      }
+
+      nav { display: none; }
+      .header-download { display: inline-block; }
+      .mobile-download-bar { display: block; }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+      }
+
+      .logo-icon svg { width: 20px; height: 20px; }
+      .logo-text { font-size: 1.1rem; }
+
+      footer {
+        padding: 28px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 16px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :root {
+        --page-gutter: 20px;
+        --mobile-gutter: 16px;
+      }
+
+      .download-group .btn-download {
+        padding: 15px 20px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      :root {
+        --page-gutter: 16px;
+        --mobile-gutter: 12px;
+      }
+
+      .stat-item strong { font-size: 1.1rem; }
+      .stat-item span { font-size: 0.7rem; }
+      .phone-frame { width: 180px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <div class="bg-grid"></div>
+
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+            <path d="M2 12h20"/>
+          </svg>
+        </div>
+        <div class="logo-text">绿茵<span>体育</span></div>
+      </a>
+      <nav>
+        <a href="#features">产品特色</a>
+        <a href="#download">立即下载</a>
+        <a href="#download" class="nav-cta">免费下载</a>
+      </nav>
+      <a href="#download" class="header-download">立即下载</a>
+    </div>
+  </header>
+
+  <main style="padding: 15px;">
+    <section class="hero container">
+      <div class="hero-content">
+        <div class="hero-badge">官方正版 · 安全下载</div>
+        <h1>全球足球赛事<br><em>一手掌握</em></h1>
+        <p class="hero-desc">
+          绿茵体育为您提供英超、西甲、德甲、欧冠等全球顶级赛事的实时比分、高清直播与专业数据分析，随时随地畅享足球激情。
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <strong>500+</strong>
+            <span>覆盖联赛</span>
+          </div>
+          <div class="stat-item">
+            <strong>1000万+</strong>
+            <span>活跃用户</span>
+          </div>
+          <div class="stat-item">
+            <strong>4.9</strong>
+            <span>用户评分</span>
+          </div>
+        </div>
+        <div class="download-group" id="download">
+          <a href="app-release.apk" class="btn-download btn-android" id="btn-android" aria-label="下载 Android 版本">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.523 15.341c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm-11.046 0c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm11.373-6.742l1.955-3.382c.108-.187.044-.425-.143-.533-.187-.108-.425-.044-.533.143l-1.978 3.422C15.091 7.775 13.618 7.25 12 7.25s-3.091.525-4.151 1.457L5.871 5.285c-.108-.187-.346-.251-.533-.143-.187.108-.251.346-.143.533l1.955 3.382C4.367 10.341 2.75 12.775 2.75 15.591h18.5c0-2.816-1.617-5.25-4.4-6.992z"/>
+            </svg>
+            <div class="btn-label">
+              <small>立即下载</small>
+              <strong>Android 版</strong>
+            </div>
+          </a>
+          <a href="#" class="btn-download btn-ios" id="btn-ios" aria-label="下载 iOS 版本">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <div class="btn-label">
+              <small>App Store 下载</small>
+              <strong>iOS 版</strong>
+            </div>
+          </a>
+        </div>
+        <p class="download-note">支持 Android 6.0+ / iOS 13.0+ · 安装遇到问题？<a href="#">查看安装教程</a></p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="glow-orb green"></div>
+        <div class="glow-orb gold"></div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-content">
+              <div class="match-card">
+                <div class="match-league">⚽ 英超 · 第 38 轮</div>
+                <div class="match-teams">
+                  <div class="team">
+                    <div class="team-icon">🔴</div>
+                    <div class="team-name">曼联</div>
+                  </div>
+                  <div class="match-score">
+                    <div class="score">2 - 1</div>
+                    <div class="time">67'</div>
+                    <div class="live-tag">LIVE</div>
+                  </div>
+                  <div class="team">
+                    <div class="team-icon">🔵</div>
+                    <div class="team-name">切尔西</div>
+                  </div>
+                </div>
+              </div>
+              <div class="match-card">
+                <div class="match-league">⚽ 西甲 · 第 36 轮</div>
+                <div class="match-teams">
+                  <div class="team">
+                    <div class="team-icon">⚪</div>
+                    <div class="team-name">皇马</div>
+                  </div>
+                  <div class="match-score">
+                    <div class="score">3 - 0</div>
+                    <div class="time">完场</div>
+                  </div>
+                  <div class="team">
+                    <div class="team-icon">🔴</div>
+                    <div class="team-name">巴萨</div>
+                  </div>
+                </div>
+              </div>
+              <div class="match-card">
+                <div class="match-league">⚽ 欧冠 · 半决赛</div>
+                <div class="match-teams">
+                  <div class="team">
+                    <div class="team-icon">🔵</div>
+                    <div class="team-name">曼城</div>
+                  </div>
+                  <div class="match-score">
+                    <div class="score">1 - 1</div>
+                    <div class="time">32'</div>
+                    <div class="live-tag">LIVE</div>
+                  </div>
+                  <div class="team">
+                    <div class="team-icon">⚫</div>
+                    <div class="team-name">拜仁</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features container" id="features">
+      <div class="section-header">
+        <h2>为什么选择绿茵体育</h2>
+        <p>专业、稳定、全面的足球赛事服务平台，为球迷打造极致观赛体验</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📺</div>
+          <h3>高清赛事直播</h3>
+          <p>多路信号源切换，1080P 高清画质，低延迟流畅播放，不错过每一个精彩瞬间。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>专业数据分析</h3>
+          <p>实时技术统计、历史交锋、赔率走势、球员评分，助您深度解读每一场比赛。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>即时比分推送</h3>
+          <p>进球、红牌、换人等关键事件毫秒级推送，支持自定义关注球队，绝不错过重要消息。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>全球联赛覆盖</h3>
+          <p>英超、西甲、德甲、意甲、法甲、欧冠、世界杯等 500+ 联赛赛事全面覆盖。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>安全官方渠道</h3>
+          <p>官方正版应用，无广告插件，数据加密传输，保障您的账户与隐私安全。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>球迷互动社区</h3>
+          <p>实时聊天室、赛事讨论、专家解读，与全球球迷一起分享足球的快乐与激情。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section container">
+      <div class="cta-box">
+        <h2>立即下载，开启足球之旅</h2>
+        <p>免费注册，畅享全球顶级足球赛事直播与数据分析服务</p>
+        <div class="download-group">
+          <a href="#" class="btn-download btn-android" aria-label="下载 Android 版本">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.523 15.341c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm-11.046 0c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm11.373-6.742l1.955-3.382c.108-.187.044-.425-.143-.533-.187-.108-.425-.044-.533.143l-1.978 3.422C15.091 7.775 13.618 7.25 12 7.25s-3.091.525-4.151 1.457L5.871 5.285c-.108-.187-.346-.251-.533-.143-.187.108-.251.346-.143.533l1.955 3.382C4.367 10.341 2.75 12.775 2.75 15.591h18.5c0-2.816-1.617-5.25-4.4-6.992z"/>
+            </svg>
+            <div class="btn-label">
+              <small>立即下载</small>
+              <strong>Android 版</strong>
+            </div>
+          </a>
+          <a href="#" class="btn-download btn-ios" aria-label="下载 iOS 版本">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <div class="btn-label">
+              <small>App Store 下载</small>
+              <strong>iOS 版</strong>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-copy">© 2026 绿茵体育. All rights reserved.</div>
+      <div class="footer-links">
+        <a href="#">用户协议</a>
+        <a href="#">隐私政策</a>
+        <a href="#">联系我们</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="mobile-download-bar" id="mobile-bar" aria-hidden="true">
+    <div class="mobile-download-bar__inner">
+      <a href="#" class="mobile-bar-btn mobile-bar-btn--android" id="bar-btn-android" aria-label="下载 Android 版本">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.523 15.341c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm-11.046 0c-.759 0-1.367-.608-1.367-1.367s.608-1.367 1.367-1.367 1.367.608 1.367 1.367-.608 1.367-1.367 1.367zm11.373-6.742l1.955-3.382c.108-.187.044-.425-.143-.533-.187-.108-.425-.044-.533.143l-1.978 3.422C15.091 7.775 13.618 7.25 12 7.25s-3.091.525-4.151 1.457L5.871 5.285c-.108-.187-.346-.251-.533-.143-.187.108-.251.346-.143.533l1.955 3.382C4.367 10.341 2.75 12.775 2.75 15.591h18.5c0-2.816-1.617-5.25-4.4-6.992z"/>
+        </svg>
+        <span>Android</span>
+      </a>
+      <a href="#" class="mobile-bar-btn mobile-bar-btn--ios" id="bar-btn-ios" aria-label="下载 iOS 版本">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <span>iOS</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const DOWNLOAD_LINKS = {
+      android: '#',
+      ios: '#'
+    };
+
+    const MOBILE_BREAKPOINT = 900;
+
+    function detectPlatform() {
+      const ua = navigator.userAgent || navigator.vendor || '';
+      if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+        return 'ios';
+      }
+      if (/Android/i.test(ua)) {
+        return 'android';
+      }
+      return 'unknown';
+    }
+
+    function isMobileView() {
+      return window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
+    }
+
+    function applyDownloadLinks() {
+      document.querySelectorAll('.btn-android, .mobile-bar-btn--android').forEach(btn => {
+        btn.href = DOWNLOAD_LINKS.android;
+      });
+      document.querySelectorAll('.btn-ios, .mobile-bar-btn--ios').forEach(btn => {
+        btn.href = DOWNLOAD_LINKS.ios;
+      });
+    }
+
+    function applyPlatformHighlight() {
+      const platform = detectPlatform();
+      document.querySelectorAll('.btn-download.is-recommended').forEach(btn => {
+        btn.classList.remove('is-recommended');
+      });
+      document.querySelectorAll('.mobile-bar-btn.is-highlight, .mobile-bar-btn.is-muted').forEach(btn => {
+        btn.classList.remove('is-highlight', 'is-muted');
+      });
+
+      const mainAndroid = document.querySelectorAll('.hero .btn-android, .cta-box .btn-android');
+      const mainIos = document.querySelectorAll('.hero .btn-ios, .cta-box .btn-ios');
+      const barAndroid = document.getElementById('bar-btn-android');
+      const barIos = document.getElementById('bar-btn-ios');
+
+      if (platform === 'ios') {
+        mainIos.forEach(btn => btn.classList.add('is-recommended'));
+        if (barIos) barIos.classList.add('is-highlight');
+        if (barAndroid) barAndroid.classList.add('is-muted');
+      } else if (platform === 'android') {
+        mainAndroid.forEach(btn => btn.classList.add('is-recommended'));
+        if (barAndroid) barAndroid.classList.add('is-highlight');
+        if (barIos) barIos.classList.add('is-muted');
+      }
+    }
+
+    function toggleMobileBar() {
+      const mobile = isMobileView();
+      document.body.classList.toggle('has-mobile-bar', mobile);
+      const bar = document.getElementById('mobile-bar');
+      if (bar) {
+        bar.setAttribute('aria-hidden', mobile ? 'false' : 'true');
+      }
+    }
+
+    applyDownloadLinks();
+    applyPlatformHighlight();
+    toggleMobileBar();
+
+    window.addEventListener('resize', toggleMobileBar, { passive: true });
+  </script>
+</body>
+</html>
